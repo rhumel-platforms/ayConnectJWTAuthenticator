@@ -1275,7 +1275,7 @@ async function getProCompanies(req, res) {
     );
   }
 }
-
+ 
 async function updateProCompany(req, res) {
   res.setHeader("Cache-Control", "no-store");
 
@@ -1298,7 +1298,16 @@ async function updateProCompany(req, res) {
       });
     }
 
-    const payload = {};
+    const { no_peppol_id: noPeppolId = false } = body;
+
+if (typeof noPeppolId !== "boolean") {
+  return res.status(400).json({
+    success: false,
+    message: "no_peppol_id must be a boolean.",
+  });
+}
+
+const payload = { no_peppol_id: noPeppolId };
 
     for (const field of [
       "company_id",
@@ -1321,13 +1330,18 @@ async function updateProCompany(req, res) {
       payload[field] = value;
     }
 
-    const textFields = [
-      ["address", "Address", 1000],
-      ["city", "City", 255],
-      ["tnr", "Tax registration number", 100],
-      ["issuing_authority", "Issuing authority", 200],
-      ["peppol_id", "Peppol ID", 50],
-    ];
+const textFields = [
+  ["address", "Address", 1000],
+  ["city", "City", 255],
+  ["tnr", "Tax registration number", 100],
+  ["issuing_authority", "Issuing authority", 200],
+];
+
+if (noPeppolId) {
+  payload.peppol_id = "";
+} else {
+  textFields.push(["peppol_id", "Peppol ID", 50]);
+}
 
     for (const [field, label, maxBytes] of textFields) {
       const value = body[field];

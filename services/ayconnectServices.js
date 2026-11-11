@@ -292,7 +292,6 @@ async function ordsDownloadUserDoc({ doc_id, user_id }) {
   const url = `${process.env.GATEWAY_BASE_URL}/${PATH}`;
   const token = await getIdcsToken(url);
 
-
   const response = await axios({
     method: "GET",
     url,
@@ -306,7 +305,6 @@ async function ordsDownloadUserDoc({ doc_id, user_id }) {
     responseType: "stream",
     validateStatus: () => true,
   });
-
 
   return response;
 }
@@ -556,6 +554,7 @@ function ordsUpdateProCompany(user_id, fields = {}) {
     tnr: fields.tnr,
     issuing_authority: fields.issuing_authority,
     peppol_id: fields.peppol_id,
+    no_peppol_id: fields.no_peppol_id,
   };
 
   return callGatewayJson("POST", "pro/companies", {
@@ -592,5 +591,5 @@ module.exports = {
   ordsApplicationDocumentExists,
   ordsDeleteAccount,
   ordsGetProCompanies,
-  ordsUpdateProCompany
+  ordsUpdateProCompany,
 };
